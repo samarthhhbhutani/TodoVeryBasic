@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify Frontend</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Sign Up</h1>
+    <label for="username">Username:</label>
+    <input type="text" id="username">
+    <label for="password">Password:</label>
+    <input type="text" id="password">
+    <button type="submit" id="signup">Sign Up</button>
+    <h4>Already have an account? <button onclick="signin()" type="submit">Sign in</button></h4>
+
+    <!-- <input type="text" placeholder="ToDo Task" id="todo">
+    <input type="text" placeholder="Time" id="time">
+    <button type="submit" onclick="addTodo()">Submit</button> -->
+
+
+    <!-- start writing code -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function signin(){
+            document.querySelector("h1").innerHTML="Sign In";
+            document.querySelector("h4").innerHTML="";
+            console.log("IN");
+            const bt=document.getElementById("signup");
+            bt.innerHTML="Sign In";
+            bt.setAttribute("id","signinbt");
+            bt.setAttribute("onclick","signinbt()");
+        }
+
+        function signup(){
+            const uname=document.querySelector("#username").value;
+            const pw=document.querySelector("#password").value;
+            axios.post("http://localhost:2500",
+                {
+                    username:uname,
+                    password:pw
+                }
+            )
+        }
+
+        async function signinbt(){
+            console.log("In signinbt");
+            const username=document.querySelector("#username").value;
+            const password=document.querySelector("#password").value;
+            signedindisp(username);
+        }
+
+        async function signedindisp(id){
+            console.log("In signedindisp");
+
+            document.querySelector("body").innerHTML=" ";
+            let data=await axios.get(`http://localhost:3000`);
+            console.log(data);
+            data=data.data;
+            render(data,id);
+            
+        }
+
+        function render(data, id) {
+            console.log("In render");
+
+            const input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("id", "todoinp");
+
+            const btn = document.createElement("button");
+            btn.innerHTML = "Add ToDo";
+            btn.setAttribute("id", "submit-btn");
+            btn.setAttribute("type","button");
+
+
+            btn.setAttribute("onclick",`addtodo(${id})`)
+
+            document.querySelector("body").appendChild(input);
+            document.querySelector("body").appendChild(btn);
+
+            console.log(data);
+            if (data[id] != undefined) {
+                for (let i = 0; i < data[id].length; i++) {
+                    tododispl(data[id][i]);
+                }
+            }
+        }
+
+        async function addtodo(id) {
+            console.log(id);
+            let ts = document.getElementById("todoinp").value;
+            console.log("INSIDE");
+            await axios.post("http://localhost:3000/add", {
+                id: id,
+                task: ts
+            });
+            console.log("In addtodo");
+            signedindisp(id);
+        }
+
+
+        function tododispl(todo){
+            console.log(todo);
+            const h6=document.createElement("h6");
+            h6.innerHTML=todo.task;
+            document.querySelector("body").appendChild(h6);
+        }
+    </script>
+</body>
+</html>
