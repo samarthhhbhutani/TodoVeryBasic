@@ -72,11 +72,13 @@
             const btn = document.createElement("button");
             btn.innerHTML = "Add ToDo";
             btn.setAttribute("id", "submit-btn");
-            btn.setAttribute("type","button");
-
-
-            btn.setAttribute("onclick",`addtodo(${id})`)
-
+            btn.setAttribute("type", "button");
+            console.log("BEFORE EVENT LISTENER")
+            btn.addEventListener("click", function(event) {
+                event.preventDefault();  
+                addtodo(id);             
+            });
+            console.log("AFTER EVENT LISTENER")
             document.querySelector("body").appendChild(input);
             document.querySelector("body").appendChild(btn);
 
